@@ -1,14 +1,18 @@
 package com.iamashad.unitrackrrr.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,10 +26,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -38,9 +46,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.iamashad.unitrackrrr.R
+import com.iamashad.unitrackrrr.navigation.TrackrScreens
 import com.iamashad.unitrackrrr.ui.theme.onPrimaryContainerDarkHighContrast
-import com.iamashad.unitrackrrr.ui.theme.onPrimaryContainerLight
 import com.iamashad.unitrackrrr.ui.theme.primaryContainerLight
 import com.iamashad.unitrackrrr.utils.customFonts
 
@@ -58,7 +68,8 @@ fun EmailInputField(
         },
         label = {
             Text(
-                text = "Email"
+                text = "Email",
+                color = Color(130,30,150)
             )
         },
         leadingIcon = {
@@ -73,7 +84,11 @@ fun EmailInputField(
         keyboardActions = onAction,
         maxLines = 1,
         shape = RoundedCornerShape(35.dp),
-        modifier = modifier
+        modifier = modifier,
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = Color.Black,
+            unfocusedContainerColor = Color(224, 240, 255),
+            focusedContainerColor = Color(224, 240, 255))
     )
 }
 
@@ -91,7 +106,8 @@ fun PasswordInputField(
         },
         label = {
             Text(
-                text = "Password"
+                text = "Password",
+                color=Color(130,30,150)
             )
         },
         leadingIcon = {
@@ -132,8 +148,13 @@ fun PasswordInputField(
         keyboardActions = onAction,
         maxLines = 1,
         shape = RoundedCornerShape(35.dp),
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = Color.Black,
+            unfocusedContainerColor = Color(224, 240, 255),
+            focusedContainerColor = Color(224, 240, 255)),
         modifier = modifier
     )
+
 }
 @Composable
 fun LoginRegisterButton(
@@ -149,17 +170,17 @@ fun LoginRegisterButton(
             defaultElevation = 15.dp
         ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(226,180,117,255),
-            disabledContainerColor = Color(241,223,200,255)
-
+            disabledContainerColor = Color(72, 191, 145),
+            containerColor = Color(72, 191, 145),
         ),
         enabled = validInputs,
         modifier = modifier
     ) {
         Text(
             text = buttonText,
-            color = Color.Black,
-            fontSize = 20.sp
+            color = Color(101, 67, 33),
+            fontSize = 20.sp,
+            fontFamily = customFonts(GoogleFont("Aldrich"))
         )
     }
 }
@@ -174,50 +195,59 @@ fun AppTopBar(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(.1f),
+            .fillMaxHeight(.12f)
+            .padding(top=1.dp),
         color = primaryContainerLight
     ) {
         Row (
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 5.dp, top = 30.dp, end = 5.dp, bottom = 15.dp)
-        ){
-            if (isHome) {
-                Image(
-                    painter = painterResource(R.drawable.nitm),
-                    contentDescription = "College Logo",
-                    modifier = Modifier
-                        .padding(5.dp)
-                )
+                .padding(start = 15.dp, top = 40.dp, end = 5.dp, bottom = 15.dp)
+        )
+        {
+            if (isHome)
+            {
+                Surface(modifier = Modifier
+                    .size(70.dp)
+                    .aspectRatio(1f)
+                    .padding(top = 5.dp),
+                    color = primaryContainerLight,
+                    shape= CircleShape
+                ){
+                    Image(
+                        painter = painterResource(R.drawable.nitm),
+                        contentDescription = "College Logo",
+                        modifier = Modifier
+                            .padding(5.dp)
+                    )
+                }
                 Column (
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxHeight()
+                        .padding( start=30.dp)
                 ) {
                     Text(
                         text = title,
                         fontSize = 37.sp,
-                        fontFamily = customFonts(GoogleFont("Unna")),
-                        color = onPrimaryContainerLight,
+                        fontFamily = customFonts(GoogleFont("Great Vibes")),
+                        color = Color(34, 40, 49),
                         modifier = Modifier
-                            .padding(bottom = 2.dp)
-                    )
-                    Text(
-                        text = "Recover, Resolve, Stay on Track",
-                        fontSize = 22.sp,
-                        fontFamily = customFonts(GoogleFont("Unna")),
-                        color = onPrimaryContainerLight,
-                        modifier = Modifier
+                            .padding(8.dp)
                     )
                 }
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        Firebase.auth.signOut().run {
+                            navController.navigate(TrackrScreens.LOGINSCREEN.name)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .scale(.7f)
+                        .scale(1f)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.logout__2_),
@@ -242,3 +272,44 @@ fun AppTopBar(
         }
     }
 }
+
+@Composable
+fun RadioButtonList(
+    selectedValue: (Int) -> Unit
+) {
+    val options = listOf("Semester I", "Semester II", "Semester III", "Semester IV", "Semester V", "Semester VI", "Semester VII", "Semester VIII")
+    var selectedOption by remember { mutableStateOf(options[0]) }
+
+    Column () {
+        options.forEachIndexed { index, option ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp)
+                    .clickable {
+                        selectedOption = option
+                        selectedValue(index+1)
+                    }
+            ) {
+                RadioButton(
+                    selected = (option == selectedOption),
+                    onClick = {
+                        selectedOption = option
+                        selectedValue(index+1)
+                    }
+                )
+                Text(
+                    text = option,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+    }
+}
+
+fun showToast(context: Context, msg: String) {
+    Toast.makeText(context, msg, Toast.LENGTH_LONG)
+        .show()
+}
+

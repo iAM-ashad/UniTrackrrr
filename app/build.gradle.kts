@@ -78,6 +78,8 @@ dependencies {
     // Custom Navigation Bar
     implementation ("com.canopas.compose-animated-navigationbar:bottombar:1.0.1")
 
+    implementation("com.google.accompanist:accompanist-permissions:0.31.2-alpha")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

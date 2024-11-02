@@ -1,15 +1,18 @@
 package com.iamashad.unitrackrrr.screens.splash
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.iamashad.unitrackrrr.R
 import com.iamashad.unitrackrrr.navigation.TrackrScreens
 import kotlinx.coroutines.delay
 
@@ -17,22 +20,24 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     navController: NavController
 ) {
-    Column (
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Text(
-            text = "Splash Screen"
+    Surface(
+        modifier=Modifier
+            .fillMaxSize(),
+        color = Color(224, 240, 255,255)
+    )
+    {
+        Image(painterResource(id = R.drawable.splash_logo),
+            contentDescription = "Splash Screen",
+            modifier = Modifier
+                .padding(5.dp)
         )
     }
     LaunchedEffect(key1 = true) {
-        delay(2000L)
+        delay(4000L)
         if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
             navController.navigate(TrackrScreens.LOGINSCREEN.name)
         } else {
-            navController.navigate(TrackrScreens.VIEWFOUNDSCREEN.name)
+            navController.navigate(TrackrScreens.HOMESCREEN.name)
+            }
         }
-    }
 }

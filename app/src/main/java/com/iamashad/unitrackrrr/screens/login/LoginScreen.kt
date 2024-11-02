@@ -1,5 +1,6 @@
 package com.iamashad.unitrackrrr.screens.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,7 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.GoogleFont
@@ -39,43 +45,64 @@ fun LoginScreen(
     viewModel: RegisterViewModel = viewModel()
 ) {
 
-    Column (
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Text(
-            text = stringResource(id = R.string.app_name),
-            fontSize = 80.sp,
-            fontFamily = customFonts(GoogleFont("Great Vibes")),
-            color = Color(240,205,156),
+    Surface(color = Color(224, 240, 255,255)) {
+
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(5.dp)
-        )
-        UsersForm("Login") {email, password ->
-            viewModel.signInWithEmailPassword(email,password) {
-                navController.navigate(TrackrScreens.HOMESCREEN.name)
-            }
-        }
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)
+                .fillMaxSize()
         ) {
-            Text(
-                text = "Don't have an account?"
-            )
-            Text(
-                text = " Sign Up",
-                color =  Color.Blue,
-                fontWeight = FontWeight.Bold,
+            Surface(
+                shape = CircleShape,
                 modifier = Modifier
-                    .clickable {
-                        navController.navigate(TrackrScreens.REGISTERSCREEN.name)
-                    }
+                    .size(200.dp)
+                    .padding(top = 55.dp),
+                color = Color(224, 240, 255, 255)
+            ) {
+                Image(
+                    painterResource(id = R.drawable.nitm),
+                    contentDescription = "Logo",
+
+                    contentScale = ContentScale.Fit
+                )
+            }
+            Text(
+                text = stringResource(id = R.string.app_name),
+                fontSize = 80.sp,
+                fontFamily = customFonts(GoogleFont("Great Vibes")),
+                color = Color(34, 40, 49),
+                modifier = Modifier
+                    .padding(10.dp)
             )
+            UsersForm("Login") { email, password ->
+                viewModel.signInWithEmailPassword(email, password) {
+                    navController.navigate(TrackrScreens.HOMESCREEN.name)
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Text(
+                    text = "Don't have an account?",
+                    fontSize = 20.sp,
+                    color = Color(45, 52, 54)
+                )
+                Text(
+                    text = " Sign Up",
+                    color = Color(0, 102, 204),
+                    fontWeight = FontWeight.ExtraBold,
+                    fontFamily = customFonts(GoogleFont("Aldrich")),
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(TrackrScreens.REGISTERSCREEN.name)
+                        }
+                )
+            }
         }
     }
 }
@@ -100,35 +127,34 @@ fun UsersForm (
         mutableStateOf(false)
     }
 
-    Column (
+    Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
     ) {
         EmailInputField(
             emailState = email,
-            onAction = KeyboardActions{
+            onAction = KeyboardActions {
                 passwordFocusRequest.requestFocus()
             },
             modifier = Modifier
-                .padding(top = 20.dp, bottom = 10.dp)
+                .padding(top = 65.dp, bottom = 5.dp)
         )
         PasswordInputField(
             passwordState = password,
             isVisible = isVisible,
             modifier = Modifier
-                .padding(bottom = 15.dp)
+                .padding(top = 15.dp, bottom = 15.dp)
         )
-        LoginRegisterButton (
+        LoginRegisterButton(
             buttonText = buttonText,
             validInputs = valid,
             modifier = Modifier
-                .padding(bottom = 20.dp)
+                .padding(top = 95.dp, bottom = 20.dp)
         ) {
 
             onDone(email.value.trim(), password.value.trim())
             keyboardController?.hide()
         }
     }
-
 }

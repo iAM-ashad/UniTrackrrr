@@ -9,3 +9,7 @@ annotation class LostItemsQuery
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class FoundItemsQuery
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ReceiptsQuery
